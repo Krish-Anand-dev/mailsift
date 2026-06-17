@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: mailsift-backend
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    envVars:
+      - key: ABSTRACT_API_KEY
+        value: 6834393116d14a9294b367f25786e112

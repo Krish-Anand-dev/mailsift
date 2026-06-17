@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MailSift — Email Verifier</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0d0d0f;
+      --surface: #18181c;
+      --border: #2a2a32;
+      --accent: #7c6fea;
+      --accent-dim: #3d3778;
+      --valid: #3ecf7a;
+      --risky: #f5a623;
+      --invalid: #f05252;
+      --text: #e8e8f0;
+      --muted: #7a7a90;
+      --radius: 12px;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', system-ui, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px 80px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 36px;
+    }
+
+    header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #fff 40%, var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    header p {
+      color: var(--muted);
+      margin-top: 6px;
+      font-size: 0.95rem;
+    }
+
+    #drop-zone {
+      width: 100%;
+      max-width: 520px;
+      border: 2px dashed var(--border);
+      border-radius: var(--radius);
+      padding: 48px 32px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      background: var(--surface);
+    }
+
+    #drop-zone.hover, #drop-zone:hover {
+      border-color: var(--accent);
+      background: #1e1c2e;
+    }
+
+    #drop-zone svg { opacity: 0.5; margin-bottom: 12px; }
+
+    #drop-zone p { color: var(--muted); font-size: 0.9rem; }
+    #drop-zone span { color: var(--accent); font-weight: 600; }
+
+    #jobs { width: 100%; max-width: 520px; margin-top: 28px; display: flex; flex-direction: column; gap: 16px; }
+
+    .job-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      position: relative;
+    }
+
+    .job-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 14px;
+    }
+
+    .job-name { font-weight: 600; font-size: 0.95rem; }
+    .job-close {
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 1.1rem;
+      line-height: 1;
+      padding: 0;
+    }
+    .job-close:hover { color: var(--text); }
+
+    .track {
+      height: 6px;
+      background: var(--border);
+      border-radius: 99px;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+    .fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-dim), var(--accent));
+      border-radius: 99px;
+      width: 0%;
+      transition: width 0.3s;
+    }
+
+    .job-meta { font-size: 0.8rem; color: var(--muted); margin-bottom: 8px; }
+    .job-log {
+      font-size: 0.78rem;
+      color: var(--muted);
+      font-family: monospace;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 12px;
+      min-height: 16px;
+    }
+
+    .stats-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .stat-pill {
+      flex: 1;
+      padding: 8px;
+      border-radius: 8px;
+      text-align: center;
+      font-size: 0.78rem;
+      font-weight: 600;
+    }
+    .stat-pill.valid { background: #0d2b1a; color: var(--valid); }
+    .stat-pill.risky { background: #2b1e08; color: var(--risky); }
+    .stat-pill.invalid { background: #2b0e0e; color: var(--invalid); }
+    .stat-pill span { display: block; font-size: 1.1rem; }
+
+    .dl-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .dl-btn {
+      display: block;
+      text-align: center;
+      padding: 9px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: opacity 0.15s;
+    }
+    .dl-btn:hover { opacity: 0.8; }
+    .dl-btn.all { background: var(--accent-dim); color: #c4bcff; grid-column: 1 / -1; }
+    .dl-btn.valid { background: #0d2b1a; color: var(--valid); }
+    .dl-btn.risky { background: #2b1e08; color: var(--risky); }
+    .dl-btn.bad { background: #2b0e0e; color: var(--invalid); }
+
+    .cancel-btn {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      border-radius: 8px;
+      padding: 7px 14px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      width: 100%;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .cancel-btn:hover { border-color: var(--invalid); color: var(--invalid); }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>MailSift</h1>
+  <p>Drop a CSV to verify emails — syntax, MX, SMTP, and Abstract API fallback.</p>
+</header>
+
+<div id="drop-zone">
+  <svg width="36" height="36" fill="none" viewBox="0 0 24 24" stroke="#7c6fea" stroke-width="1.5">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M12 16V4m0 0L8 8m4-4 4 4M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2"/>
+  </svg>
+  <p><span>Click to upload</span> or drag & drop</p>
+  <p style="margin-top:4px;">CSV with an <code style="color:#7c6fea">email</code> column</p>
+</div>
+<input type="file" id="file-input" accept=".csv" style="display:none">
+
+<div id="jobs"></div>
+
+<script>
+const BASE = 'http://localhost:5050';
+const drop = document.getElementById('drop-zone');
+const fileInput = document.getElementById('file-input');
+const jobsEl = document.getElementById('jobs');
+
+drop.addEventListener('click', () => fileInput.click());
+drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('hover'); });
+drop.addEventListener('dragleave', () => drop.classList.remove('hover'));
+drop.addEventListener('drop', e => { e.preventDefault(); drop.classList.remove('hover'); handleFile(e.dataTransfer.files[0]); });
+fileInput.addEventListener('change', () => { handleFile(fileInput.files[0]); fileInput.value = ''; });
+
+function handleFile(file) {
+  if (!file) return;
+  const fd = new FormData();
+  fd.append('file', file);
+  fetch(`${BASE}/verify`, { method: 'POST', body: fd })
+    .then(r => r.json())
+    .then(({ job_id }) => createCard(job_id, file.name));
+}
+
+function createCard(job_id, fileName) {
+  const card = document.createElement('div');
+  card.className = 'job-card';
+  card.innerHTML = `
+    <div class="job-header">
+      <div class="job-name">${fileName}</div>
+      <button class="job-close" title="Remove">✕</button>
+    </div>
+    <div class="track"><div class="fill"></div></div>
+    <div class="job-meta">Starting…</div>
+    <div class="job-log"></div>
+    <div class="job-actions"></div>
+  `;
+  jobsEl.prepend(card);
+
+  const fill = card.querySelector('.fill');
+  const meta = card.querySelector('.job-meta');
+  const logEl = card.querySelector('.job-log');
+  const actions = card.querySelector('.job-actions');
+  const closeBtn = card.querySelector('.job-close');
+
+  // Cancel button
+  const cancelBtn = document.createElement('button');
+  cancelBtn.className = 'cancel-btn';
+  cancelBtn.textContent = 'Cancel';
+  actions.appendChild(cancelBtn);
+
+  let canceled = false;
+
+  cancelBtn.onclick = () => {
+    canceled = true;
+    fetch(`${BASE}/cancel?job_id=${job_id}`, { method: 'POST' });
+    meta.textContent = 'Canceled.';
+    cancelBtn.remove();
+  };
+
+  closeBtn.onclick = () => {
+    fetch(`${BASE}/cancel?job_id=${job_id}`, { method: 'POST' });
+    card.remove();
+  };
+
+  const pollLog = setInterval(() => {
+    if (canceled) return clearInterval(pollLog);
+    fetch(`${BASE}/log?job_id=${job_id}`).then(r => r.text()).then(t => { logEl.textContent = t; });
+    fetch(`${BASE}/progress?job_id=${job_id}`).then(r => r.json()).then(d => {
+      fill.style.width = d.percent + '%';
+      meta.textContent = `${d.percent}% — row ${d.row} of ${d.total}`;
+
+      if (d.done || d.percent >= 100) {
+        clearInterval(pollLog);
+        cancelBtn.remove();
+        logEl.textContent = '';
+        // Fetch stats then show downloads
+        fetch(`${BASE}/stats?job_id=${job_id}`).then(r => r.json()).then(s => {
+          actions.innerHTML = `
+            <div class="stats-row">
+              <div class="stat-pill valid"><span>${s.valid ?? 0}</span>Valid</div>
+              <div class="stat-pill risky"><span>${s.risky ?? 0}</span>Risky</div>
+              <div class="stat-pill invalid"><span>${s.invalid ?? 0}</span>Invalid</div>
+            </div>
+            <div class="dl-grid">
+              <a class="dl-btn all" href="${BASE}/download?job_id=${job_id}&type=all" target="_blank">⬇ All Results</a>
+              <a class="dl-btn valid" href="${BASE}/download?job_id=${job_id}&type=valid" target="_blank">✓ Valid</a>
+              <a class="dl-btn risky" href="${BASE}/download?job_id=${job_id}&type=risky" target="_blank">⚠ Risky</a>
+              <a class="dl-btn bad" href="${BASE}/download?job_id=${job_id}&type=risky_invalid" target="_blank">✕ Bad</a>
+            </div>
+          `;
+        });
+      }
+    });
+  }, 1000);
+}
+<footer style="margin-top:48px; color:#7a7a90; font-size:0.8rem; text-align:center;">
+  Made by Krish
+</footer>
+</script>
+</body>
+</html>
