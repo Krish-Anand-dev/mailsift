@@ -18,6 +18,7 @@ app = Flask(__name__)
 CORS(app)
 
 ABSTRACT_API_KEY = os.getenv("ABSTRACT_API_KEY")
+print("ABSTRACT KEY PRESENT:", bool(ABSTRACT_API_KEY), flush=True)
 EMAIL_REGEX = re.compile(r"[^@]+@[^@]+\.[^@]+")
 DISPOSABLE_DOMAINS = {"mailinator.com", "10minutemail.com", "guerrillamail.com"}
 ROLE_BASED_PREFIXES = {"info", "support", "admin", "sales", "contact"}
