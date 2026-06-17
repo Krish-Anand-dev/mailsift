@@ -72,6 +72,9 @@ Jobs run in the background — you can submit multiple at once and track them al
 
 ## Downloading Results
 
+<img width="597" height="310" alt="image" src="https://github.com/user-attachments/assets/362eb0e6-f3ca-42b2-ad24-5e28443cd9b5" />
+
+
 Once a job finishes, the job card displays a summary of results and four download buttons:
 
 | Button | What you get |
