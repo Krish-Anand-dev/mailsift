@@ -347,50 +347,59 @@
 
     .job-actions { /* container for stats, buttons, cancel */ }
 
-    /* Stats row */
-    .stats-row {
+    /* Results summary */
+    .results-summary {
       display: flex;
-      gap: 8px;
-      margin-bottom: 10px;
+      gap: 16px;
+      margin-bottom: 14px;
+      font-size: 0.8rem;
+      font-weight: 500;
     }
 
-    .stat-pill {
-      flex: 1;
-      padding: 10px 8px;
-      border-radius: var(--radius-sm);
-      text-align: center;
+    .results-summary .rs-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .results-summary .rs-count {
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: -0.4px;
+    }
+
+    .results-summary .rs-label {
+      color: var(--muted);
+      font-size: 0.75rem;
+    }
+
+    .rs-item.valid .rs-count { color: var(--valid); }
+    .rs-item.risky .rs-count { color: var(--risky); }
+    .rs-item.invalid .rs-count { color: var(--invalid); }
+
+    /* Download section */
+    .dl-heading {
       font-size: 0.72rem;
       font-weight: 600;
-      letter-spacing: 0.02em;
+      letter-spacing: 0.06em;
       text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
     }
 
-    .stat-pill span {
-      display: block;
-      font-size: 1.25rem;
-      font-weight: 700;
-      letter-spacing: -0.5px;
-      margin-bottom: 1px;
-      text-transform: none;
-    }
-
-    .stat-pill.valid { background: rgba(62, 207, 122, 0.08); color: var(--valid); border: 1px solid rgba(62, 207, 122, 0.15); }
-    .stat-pill.risky { background: rgba(245, 166, 35, 0.08); color: var(--risky); border: 1px solid rgba(245, 166, 35, 0.15); }
-    .stat-pill.invalid { background: rgba(240, 82, 82, 0.08); color: var(--invalid); border: 1px solid rgba(240, 82, 82, 0.15); }
-
-    /* Download buttons */
-    .dl-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 7px;
+    .dl-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
     }
 
     .dl-btn {
-      display: block;
-      text-align: center;
-      padding: 9px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
       border-radius: var(--radius-sm);
-      font-size: 0.78rem;
+      font-size: 0.8rem;
       font-weight: 600;
       text-decoration: none;
       transition: opacity 0.15s, transform 0.12s;
@@ -400,7 +409,10 @@
     .dl-btn:hover { opacity: 0.82; transform: translateY(-1px); }
     .dl-btn:active { transform: translateY(0); }
 
-    .dl-btn.all { background: var(--accent-dim); color: #c4bcff; grid-column: 1 / -1; }
+    .dl-btn .dl-label { display: flex; align-items: center; gap: 8px; }
+    .dl-btn .dl-sub { font-size: 0.7rem; font-weight: 400; opacity: 0.75; }
+
+    .dl-btn.all   { background: var(--accent-dim); color: #c4bcff; }
     .dl-btn.valid { background: rgba(62, 207, 122, 0.1); color: var(--valid); border: 1px solid rgba(62, 207, 122, 0.18); }
     .dl-btn.risky { background: rgba(245, 166, 35, 0.1); color: var(--risky); border: 1px solid rgba(245, 166, 35, 0.18); }
     .dl-btn.bad   { background: rgba(240, 82, 82, 0.1); color: var(--invalid); border: 1px solid rgba(240, 82, 82, 0.18); }
@@ -623,16 +635,38 @@ function createCard(job_id, fileName) {
         logEl.textContent = '';
         fetch(`${BASE}/stats?job_id=${job_id}`).then(r => r.json()).then(s => {
           actions.innerHTML = `
-            <div class="stats-row">
-              <div class="stat-pill valid"><span>${s.valid ?? 0}</span>Valid</div>
-              <div class="stat-pill risky"><span>${s.risky ?? 0}</span>Risky</div>
-              <div class="stat-pill invalid"><span>${s.invalid ?? 0}</span>Invalid</div>
+            <div class="results-summary">
+              <div class="rs-item valid">
+                <span class="rs-count">${s.valid ?? 0}</span>
+                <span class="rs-label">Valid</span>
+              </div>
+              <div class="rs-item risky">
+                <span class="rs-count">${s.risky ?? 0}</span>
+                <span class="rs-label">Risky</span>
+              </div>
+              <div class="rs-item invalid">
+                <span class="rs-count">${s.invalid ?? 0}</span>
+                <span class="rs-label">Invalid</span>
+              </div>
             </div>
-            <div class="dl-grid">
-              <a class="dl-btn all" href="${BASE}/download?job_id=${job_id}&type=all" target="_blank">⬇ All Results</a>
-              <a class="dl-btn valid" href="${BASE}/download?job_id=${job_id}&type=valid" target="_blank">✓ Valid</a>
-              <a class="dl-btn risky" href="${BASE}/download?job_id=${job_id}&type=risky" target="_blank">⚠ Risky</a>
-              <a class="dl-btn bad" href="${BASE}/download?job_id=${job_id}&type=risky_invalid" target="_blank">✕ Bad</a>
+            <div class="dl-heading">Download Results</div>
+            <div class="dl-stack">
+              <a class="dl-btn all" href="${BASE}/download?job_id=${job_id}&type=all" target="_blank">
+                <span class="dl-label">⬇ All Emails</span>
+                <span class="dl-sub">Full list with status &amp; reason</span>
+              </a>
+              <a class="dl-btn valid" href="${BASE}/download?job_id=${job_id}&type=valid" target="_blank">
+                <span class="dl-label">✓ Valid Only</span>
+                <span class="dl-sub">${s.valid ?? 0} emails</span>
+              </a>
+              <a class="dl-btn risky" href="${BASE}/download?job_id=${job_id}&type=risky" target="_blank">
+                <span class="dl-label">⚠ Risky Only</span>
+                <span class="dl-sub">${s.risky ?? 0} emails</span>
+              </a>
+              <a class="dl-btn bad" href="${BASE}/download?job_id=${job_id}&type=risky_invalid" target="_blank">
+                <span class="dl-label">✕ Risky + Invalid</span>
+                <span class="dl-sub">Suppression list — ${(s.risky ?? 0) + (s.invalid ?? 0)} emails</span>
+              </a>
             </div>
           `;
         });
