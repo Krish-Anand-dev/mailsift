@@ -42,37 +42,43 @@ def smtp_check(email, mx_record):
 def abstract_verify(email):
     try:
         r = requests.get(
-            "https://emailvalidation.abstractapi.com/v1/",
+            "https://emailreputation.abstractapi.com/v1/",
             params={
                 "api_key": ABSTRACT_API_KEY,
-                "email": email
+                "email": email,
             },
-            timeout=10,
+            timeout=15,
         )
 
         data = r.json()
 
-        # Print full response to Render logs
-        print(f"\nABSTRACT API RESPONSE for {email}")
-        print(data)
-        print()
+        print("=" * 60, flush=True)
+        print("ABSTRACT API RESPONSE:", data, flush=True)
+        print("=" * 60, flush=True)
 
-        deliverability = str(data.get("deliverability", "")).upper()
+        deliverability = (
+            data.get("email_deliverability", {})
+            .get("status", "")
+            .lower()
+        )
 
-        if deliverability == "DELIVERABLE":
+        if deliverability == "deliverable":
             return "valid", "abstract_deliverable"
 
-        elif deliverability == "UNDELIVERABLE":
+        elif deliverability in [
+            "undeliverable",
+            "invalid",
+            "invalid_email"
+        ]:
             return "invalid", "abstract_undeliverable"
 
         elif deliverability:
-            return "risky", f"abstract_{deliverability.lower()}"
+            return "risky", f"abstract_{deliverability}"
 
-        else:
-            return "risky", "abstract_no_deliverability"
+        return "risky", "abstract_no_deliverability"
 
     except Exception as e:
-        print(f"ABSTRACT ERROR: {e}", flush=True)
+        print("ABSTRACT ERROR:", str(e), flush=True)
         return "risky", "abstract_error"
 
 
