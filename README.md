@@ -5,6 +5,7 @@
 **Live demo:** [mailsift.vercel.app](https://mailsift-one.vercel.app) &nbsp;·&nbsp; **Backend:** [Render](https://render.com)
 
 ---
+<img width="1728" height="887" alt="image" src="https://github.com/user-attachments/assets/bc6d5f14-2d30-41e6-849a-d030ade109fe" />
 
 ## What It Does
 
