@@ -3,126 +3,410 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>MailSift — Email Verifier</title>
+  <title>MailSift | Bulk Email Verification Tool</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
       --bg: #0d0d0f;
       --surface: #18181c;
+      --surface-raised: #1e1e24;
       --border: #2a2a32;
+      --border-subtle: #222228;
       --accent: #7c6fea;
       --accent-dim: #3d3778;
       --valid: #3ecf7a;
       --risky: #f5a623;
       --invalid: #f05252;
       --text: #e8e8f0;
+      --text-secondary: #9898b0;
       --muted: #7a7a90;
-      --radius: 12px;
+      --radius: 14px;
+      --radius-sm: 8px;
+      --shadow-card: 0 2px 12px rgba(0,0,0,0.35), 0 1px 3px rgba(0,0,0,0.25);
+      --shadow-drop: 0 4px 24px rgba(0,0,0,0.45), 0 1px 4px rgba(0,0,0,0.3);
     }
 
     body {
       background: var(--bg);
       color: var(--text);
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 40px 20px 80px;
+      padding: 52px 20px 96px;
+      -webkit-font-smoothing: antialiased;
     }
 
-    header { text-align: center; margin-bottom: 36px; }
+    /* ── Header ── */
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .header-badge {
+      display: inline-block;
+      background: rgba(124, 111, 234, 0.12);
+      border: 1px solid rgba(124, 111, 234, 0.28);
+      color: #a89ff5;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 99px;
+      margin-bottom: 14px;
+    }
 
     header h1 {
-      font-size: 2rem;
-      font-weight: 700;
-      letter-spacing: -0.5px;
-      background: linear-gradient(135deg, #fff 40%, var(--accent));
+      font-size: 2.2rem;
+      font-weight: 750;
+      letter-spacing: -0.6px;
+      background: linear-gradient(135deg, #ffffff 35%, #a89ff5);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1.15;
     }
 
-    header p { color: var(--muted); margin-top: 6px; font-size: 0.95rem; }
+    header .subtitle {
+      color: var(--text-secondary);
+      margin-top: 10px;
+      font-size: 0.92rem;
+      line-height: 1.55;
+      max-width: 380px;
+      margin-left: auto;
+      margin-right: auto;
+    }
 
+    /* ── Drop Zone ── */
     #drop-zone {
       width: 100%;
-      max-width: 520px;
-      border: 2px dashed var(--border);
+      max-width: 540px;
+      border: 1.5px dashed var(--border);
       border-radius: var(--radius);
-      padding: 48px 32px;
+      padding: 52px 36px;
       text-align: center;
       cursor: pointer;
-      transition: border-color 0.2s, background 0.2s;
+      transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
       background: var(--surface);
+      box-shadow: var(--shadow-drop);
     }
 
-    #drop-zone.hover, #drop-zone:hover { border-color: var(--accent); background: #1e1c2e; }
-    #drop-zone svg { opacity: 0.5; margin-bottom: 12px; }
-    #drop-zone p { color: var(--muted); font-size: 0.9rem; }
-    #drop-zone span { color: var(--accent); font-weight: 600; }
+    #drop-zone:hover, #drop-zone.hover {
+      border-color: var(--accent);
+      background: #1c1a2e;
+      box-shadow: 0 8px 32px rgba(124, 111, 234, 0.14), 0 2px 8px rgba(0,0,0,0.3);
+      transform: translateY(-2px);
+    }
 
-    #jobs { width: 100%; max-width: 520px; margin-top: 28px; display: flex; flex-direction: column; gap: 16px; }
+    #drop-zone .drop-icon {
+      width: 44px;
+      height: 44px;
+      background: rgba(124, 111, 234, 0.1);
+      border-radius: 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+
+    #drop-zone .drop-icon svg { opacity: 0.85; display: block; }
+
+    #drop-zone .drop-primary {
+      color: var(--text);
+      font-size: 0.92rem;
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+
+    #drop-zone .drop-primary span { color: var(--accent); font-weight: 600; }
+
+    #drop-zone .drop-hint {
+      color: var(--muted);
+      font-size: 0.8rem;
+      margin-top: 6px;
+    }
+
+    #drop-zone .drop-hint code {
+      color: var(--accent);
+      background: rgba(124, 111, 234, 0.1);
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-size: 0.76rem;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+    }
+
+    .column-note {
+      margin-top: 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(245, 166, 35, 0.08);
+      border: 1px solid rgba(245, 166, 35, 0.2);
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-size: 0.77rem;
+      color: var(--risky);
+    }
+
+    .column-note strong { font-weight: 700; font-family: 'SF Mono', 'Fira Code', monospace; }
+
+    /* ── Jobs ── */
+    #jobs {
+      width: 100%;
+      max-width: 540px;
+      margin-top: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
 
     .job-card {
       background: var(--surface);
-      border: 1px solid var(--border);
+      border: 1px solid var(--border-subtle);
       border-radius: var(--radius);
-      padding: 20px;
+      padding: 22px;
       position: relative;
+      box-shadow: var(--shadow-card);
+      transition: box-shadow 0.2s ease;
     }
 
-    .job-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; }
-    .job-name { font-weight: 600; font-size: 0.95rem; }
-    .job-close { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1.1rem; line-height: 1; padding: 0; }
-    .job-close:hover { color: var(--text); }
+    .job-card:hover {
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4), 0 1px 4px rgba(0,0,0,0.3);
+    }
 
-    .track { height: 6px; background: var(--border); border-radius: 99px; overflow: hidden; margin-bottom: 10px; }
-    .fill { height: 100%; background: linear-gradient(90deg, var(--accent-dim), var(--accent)); border-radius: 99px; width: 0%; transition: width 0.3s; }
+    .job-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
 
-    .job-meta { font-size: 0.8rem; color: var(--muted); margin-bottom: 8px; }
-    .job-log { font-size: 0.78rem; color: var(--muted); font-family: monospace; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 12px; min-height: 16px; }
+    .job-name {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--text);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 400px;
+    }
 
-    .stats-row { display: flex; gap: 8px; margin-bottom: 14px; }
-    .stat-pill { flex: 1; padding: 8px; border-radius: 8px; text-align: center; font-size: 0.78rem; font-weight: 600; }
-    .stat-pill.valid { background: #0d2b1a; color: var(--valid); }
-    .stat-pill.risky { background: #2b1e08; color: var(--risky); }
-    .stat-pill.invalid { background: #2b0e0e; color: var(--invalid); }
-    .stat-pill span { display: block; font-size: 1.1rem; }
+    .job-close {
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 1rem;
+      line-height: 1;
+      padding: 4px 6px;
+      border-radius: 4px;
+      transition: color 0.15s, background 0.15s;
+      flex-shrink: 0;
+    }
 
-    .dl-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    .dl-btn { display: block; text-align: center; padding: 9px; border-radius: 8px; font-size: 0.8rem; font-weight: 600; text-decoration: none; transition: opacity 0.15s; }
-    .dl-btn:hover { opacity: 0.8; }
+    .job-close:hover { color: var(--text); background: rgba(255,255,255,0.06); }
+
+    /* Progress track */
+    .track {
+      height: 5px;
+      background: var(--border);
+      border-radius: 99px;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+
+    .fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-dim), var(--accent));
+      border-radius: 99px;
+      width: 0%;
+      transition: width 0.35s ease;
+    }
+
+    .job-meta {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-bottom: 6px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .job-log {
+      font-size: 0.75rem;
+      color: var(--muted);
+      font-family: 'SF Mono', 'Fira Code', ui-monospace, monospace;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 14px;
+      min-height: 16px;
+      opacity: 0.75;
+    }
+
+    .job-actions { /* container for stats, buttons, cancel */ }
+
+    /* Stats */
+    .stats-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .stat-pill {
+      flex: 1;
+      padding: 10px 8px;
+      border-radius: var(--radius-sm);
+      text-align: center;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+
+    .stat-pill span {
+      display: block;
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 1px;
+      text-transform: none;
+    }
+
+    .stat-pill.valid { background: rgba(62, 207, 122, 0.08); color: var(--valid); border: 1px solid rgba(62, 207, 122, 0.15); }
+    .stat-pill.risky { background: rgba(245, 166, 35, 0.08); color: var(--risky); border: 1px solid rgba(245, 166, 35, 0.15); }
+    .stat-pill.invalid { background: rgba(240, 82, 82, 0.08); color: var(--invalid); border: 1px solid rgba(240, 82, 82, 0.15); }
+
+    /* Download buttons */
+    .dl-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7px;
+    }
+
+    .dl-btn {
+      display: block;
+      text-align: center;
+      padding: 9px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 0.78rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: opacity 0.15s, transform 0.12s;
+      letter-spacing: 0.01em;
+    }
+
+    .dl-btn:hover { opacity: 0.82; transform: translateY(-1px); }
+    .dl-btn:active { transform: translateY(0); }
+
     .dl-btn.all { background: var(--accent-dim); color: #c4bcff; grid-column: 1 / -1; }
-    .dl-btn.valid { background: #0d2b1a; color: var(--valid); }
-    .dl-btn.risky { background: #2b1e08; color: var(--risky); }
-    .dl-btn.bad { background: #2b0e0e; color: var(--invalid); }
+    .dl-btn.valid { background: rgba(62, 207, 122, 0.1); color: var(--valid); border: 1px solid rgba(62, 207, 122, 0.18); }
+    .dl-btn.risky { background: rgba(245, 166, 35, 0.1); color: var(--risky); border: 1px solid rgba(245, 166, 35, 0.18); }
+    .dl-btn.bad   { background: rgba(240, 82, 82, 0.1); color: var(--invalid); border: 1px solid rgba(240, 82, 82, 0.18); }
 
-    .cancel-btn { background: none; border: 1px solid var(--border); color: var(--muted); border-radius: 8px; padding: 7px 14px; font-size: 0.8rem; cursor: pointer; width: 100%; transition: border-color 0.15s, color 0.15s; }
-    .cancel-btn:hover { border-color: var(--invalid); color: var(--invalid); }
+    /* Cancel */
+    .cancel-btn {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      border-radius: var(--radius-sm);
+      padding: 8px 14px;
+      font-size: 0.78rem;
+      font-weight: 500;
+      cursor: pointer;
+      width: 100%;
+      transition: border-color 0.15s, color 0.15s, background 0.15s;
+    }
 
-    footer { margin-top: 48px; color: var(--muted); font-size: 0.8rem; text-align: center; }
+    .cancel-btn:hover {
+      border-color: rgba(240, 82, 82, 0.5);
+      color: var(--invalid);
+      background: rgba(240, 82, 82, 0.05);
+    }
+
+    /* ── Footer ── */
+    footer {
+      margin-top: 60px;
+      text-align: center;
+      border-top: 1px solid var(--border-subtle);
+      padding-top: 28px;
+      width: 100%;
+      max-width: 540px;
+    }
+
+    .footer-name {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 4px;
+    }
+
+    .footer-desc {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-bottom: 12px;
+      line-height: 1.5;
+    }
+
+    .footer-github {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.78rem;
+      font-weight: 500;
+      padding: 5px 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      transition: color 0.15s, border-color 0.15s;
+    }
+
+    .footer-github:hover { color: var(--text); border-color: #444455; }
+    .footer-github svg { opacity: 0.7; }
+
+    /* Responsive */
+    @media (max-width: 560px) {
+      header h1 { font-size: 1.75rem; }
+      #drop-zone { padding: 40px 24px; }
+      .job-name { max-width: 240px; }
+    }
   </style>
 </head>
 <body>
 
 <header>
+  <div class="header-badge">Bulk Email Verification Made Simple</div>
   <h1>MailSift</h1>
-  <p>Drop a CSV to verify emails — syntax, MX, SMTP, and Abstract API fallback.</p>
+  <p class="subtitle">Verify email lists using syntax validation, MX records, SMTP checks, and reputation analysis.</p>
 </header>
 
 <div id="drop-zone">
-  <svg width="36" height="36" fill="none" viewBox="0 0 24 24" stroke="#7c6fea" stroke-width="1.5">
-    <path stroke-linecap="round" stroke-linejoin="round" d="M12 16V4m0 0L8 8m4-4 4 4M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2"/>
-  </svg>
-  <p><span>Click to upload</span> or drag & drop</p>
-  <p style="margin-top:4px;">CSV with an <code style="color:#7c6fea">email</code> column</p>
+  <div class="drop-icon">
+    <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#7c6fea" stroke-width="1.8">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M12 16V4m0 0L8 8m4-4 4 4M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2"/>
+    </svg>
+  </div>
+  <p class="drop-primary"><span>Click to upload</span> or drag & drop</p>
+  <p class="drop-hint">CSV with an <code>email</code> column</p>
+  <div class="column-note">
+    <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4m0 4h.01M12 3a9 9 0 100 18A9 9 0 0012 3z"/></svg>
+    Column must be named exactly <strong>"email"</strong> (lowercase)
+  </div>
 </div>
 <input type="file" id="file-input" accept=".csv" style="display:none">
 
 <div id="jobs"></div>
 
-<footer>Made by Krish</footer>
+<footer>
+  <div class="footer-name">Krish Anand</div>
+  <div class="footer-desc">Built for quick and reliable bulk email verification.</div>
+  <a class="footer-github" href="https://github.com/Krish-Anand-dev" target="_blank" rel="noopener">
+    <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+    github.com/Krish-Anand-dev
+  </a>
+</footer>
 
 <script>
 const BASE = 'https://mailsift-9571.onrender.com';
