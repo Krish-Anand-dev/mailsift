@@ -32,10 +32,7 @@
       padding: 40px 20px 80px;
     }
 
-    header {
-      text-align: center;
-      margin-bottom: 36px;
-    }
+    header { text-align: center; margin-bottom: 36px; }
 
     header h1 {
       font-size: 2rem;
@@ -46,11 +43,7 @@
       -webkit-text-fill-color: transparent;
     }
 
-    header p {
-      color: var(--muted);
-      margin-top: 6px;
-      font-size: 0.95rem;
-    }
+    header p { color: var(--muted); margin-top: 6px; font-size: 0.95rem; }
 
     #drop-zone {
       width: 100%;
@@ -64,13 +57,8 @@
       background: var(--surface);
     }
 
-    #drop-zone.hover, #drop-zone:hover {
-      border-color: var(--accent);
-      background: #1e1c2e;
-    }
-
+    #drop-zone.hover, #drop-zone:hover { border-color: var(--accent); background: #1e1c2e; }
     #drop-zone svg { opacity: 0.5; margin-bottom: 12px; }
-
     #drop-zone p { color: var(--muted); font-size: 0.9rem; }
     #drop-zone span { color: var(--accent); font-weight: 600; }
 
@@ -84,103 +72,36 @@
       position: relative;
     }
 
-    .job-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 14px;
-    }
-
+    .job-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; }
     .job-name { font-weight: 600; font-size: 0.95rem; }
-    .job-close {
-      background: none;
-      border: none;
-      color: var(--muted);
-      cursor: pointer;
-      font-size: 1.1rem;
-      line-height: 1;
-      padding: 0;
-    }
+    .job-close { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1.1rem; line-height: 1; padding: 0; }
     .job-close:hover { color: var(--text); }
 
-    .track {
-      height: 6px;
-      background: var(--border);
-      border-radius: 99px;
-      overflow: hidden;
-      margin-bottom: 10px;
-    }
-    .fill {
-      height: 100%;
-      background: linear-gradient(90deg, var(--accent-dim), var(--accent));
-      border-radius: 99px;
-      width: 0%;
-      transition: width 0.3s;
-    }
+    .track { height: 6px; background: var(--border); border-radius: 99px; overflow: hidden; margin-bottom: 10px; }
+    .fill { height: 100%; background: linear-gradient(90deg, var(--accent-dim), var(--accent)); border-radius: 99px; width: 0%; transition: width 0.3s; }
 
     .job-meta { font-size: 0.8rem; color: var(--muted); margin-bottom: 8px; }
-    .job-log {
-      font-size: 0.78rem;
-      color: var(--muted);
-      font-family: monospace;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      margin-bottom: 12px;
-      min-height: 16px;
-    }
+    .job-log { font-size: 0.78rem; color: var(--muted); font-family: monospace; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 12px; min-height: 16px; }
 
-    .stats-row {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 14px;
-    }
-    .stat-pill {
-      flex: 1;
-      padding: 8px;
-      border-radius: 8px;
-      text-align: center;
-      font-size: 0.78rem;
-      font-weight: 600;
-    }
+    .stats-row { display: flex; gap: 8px; margin-bottom: 14px; }
+    .stat-pill { flex: 1; padding: 8px; border-radius: 8px; text-align: center; font-size: 0.78rem; font-weight: 600; }
     .stat-pill.valid { background: #0d2b1a; color: var(--valid); }
     .stat-pill.risky { background: #2b1e08; color: var(--risky); }
     .stat-pill.invalid { background: #2b0e0e; color: var(--invalid); }
     .stat-pill span { display: block; font-size: 1.1rem; }
 
-    .dl-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-    }
-    .dl-btn {
-      display: block;
-      text-align: center;
-      padding: 9px;
-      border-radius: 8px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      text-decoration: none;
-      transition: opacity 0.15s;
-    }
+    .dl-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .dl-btn { display: block; text-align: center; padding: 9px; border-radius: 8px; font-size: 0.8rem; font-weight: 600; text-decoration: none; transition: opacity 0.15s; }
     .dl-btn:hover { opacity: 0.8; }
     .dl-btn.all { background: var(--accent-dim); color: #c4bcff; grid-column: 1 / -1; }
     .dl-btn.valid { background: #0d2b1a; color: var(--valid); }
     .dl-btn.risky { background: #2b1e08; color: var(--risky); }
     .dl-btn.bad { background: #2b0e0e; color: var(--invalid); }
 
-    .cancel-btn {
-      background: none;
-      border: 1px solid var(--border);
-      color: var(--muted);
-      border-radius: 8px;
-      padding: 7px 14px;
-      font-size: 0.8rem;
-      cursor: pointer;
-      width: 100%;
-      transition: border-color 0.15s, color 0.15s;
-    }
+    .cancel-btn { background: none; border: 1px solid var(--border); color: var(--muted); border-radius: 8px; padding: 7px 14px; font-size: 0.8rem; cursor: pointer; width: 100%; transition: border-color 0.15s, color 0.15s; }
     .cancel-btn:hover { border-color: var(--invalid); color: var(--invalid); }
+
+    footer { margin-top: 48px; color: var(--muted); font-size: 0.8rem; text-align: center; }
   </style>
 </head>
 <body>
@@ -200,6 +121,8 @@
 <input type="file" id="file-input" accept=".csv" style="display:none">
 
 <div id="jobs"></div>
+
+<footer>Made by Krish</footer>
 
 <script>
 const BASE = 'https://mailsift-backend.onrender.com';
@@ -243,7 +166,6 @@ function createCard(job_id, fileName) {
   const actions = card.querySelector('.job-actions');
   const closeBtn = card.querySelector('.job-close');
 
-  // Cancel button
   const cancelBtn = document.createElement('button');
   cancelBtn.className = 'cancel-btn';
   cancelBtn.textContent = 'Cancel';
@@ -274,7 +196,6 @@ function createCard(job_id, fileName) {
         clearInterval(pollLog);
         cancelBtn.remove();
         logEl.textContent = '';
-        // Fetch stats then show downloads
         fetch(`${BASE}/stats?job_id=${job_id}`).then(r => r.json()).then(s => {
           actions.innerHTML = `
             <div class="stats-row">
@@ -294,9 +215,6 @@ function createCard(job_id, fileName) {
     });
   }, 1000);
 }
-<footer style="margin-top:48px; color:#7a7a90; font-size:0.8rem; text-align:center;">
-  Made by Krish
-</footer>
 </script>
 </body>
 </html>
