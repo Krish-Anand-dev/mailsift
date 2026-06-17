@@ -133,17 +133,48 @@ def check_email(email):
         return "invalid", f"smtp_{code}"
 
 
+def build_reader_from_emails(emails):
+    rows = []
+
+    for email in emails:
+        email = email.strip()
+
+        if email:
+            rows.append({
+                "email": email
+            })
+
+    return rows
+
+
 @app.route("/verify", methods=["POST"])
 def verify():
     job_id = str(uuid.uuid4())
-    file = request.files["file"]
-    content = file.read().decode("utf-8")
-    reader = list(csv.DictReader(io.StringIO(content)))
-    total = len(reader)
-    email_field = next(
-        (f for f in reader[0].keys() if f.lower().strip() == "email"), None
-    )
 
+    # Mode A: CSV Upload (existing behaviour — unchanged)
+    if "file" in request.files:
+        file = request.files["file"]
+        content = file.read().decode("utf-8")
+        reader = list(csv.DictReader(io.StringIO(content)))
+        email_field = next(
+            (f for f in reader[0].keys() if f.lower().strip() == "email"), None
+        )
+        filename = file.filename
+
+    # Mode B: Pasted emails (new)
+    else:
+        data = request.get_json(force=True)
+        raw_text = data.get("emails", "")
+        emails = [
+            e.strip()
+            for e in re.split(r"[\n,;]+", raw_text)
+            if e.strip()
+        ]
+        reader = build_reader_from_emails(emails)
+        email_field = "email"
+        filename = "pasted-emails.csv"
+
+    total = len(reader)
     output = io.StringIO()
     fieldnames = list(reader[0].keys()) + ["status", "reason"]
     writer = csv.DictWriter(output, fieldnames=fieldnames)
@@ -159,7 +190,7 @@ def verify():
         "writer": writer,
         "records": reader,
         "email_field": email_field,
-        "filename": file.filename,
+        "filename": filename,
         "done": False,
     }
 

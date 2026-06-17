@@ -153,6 +153,106 @@
 
     .column-note strong { font-weight: 700; font-family: 'SF Mono', 'Fira Code', monospace; }
 
+    /* ── Paste Section ── */
+    .paste-section {
+      width: 100%;
+      max-width: 540px;
+      margin-top: 20px;
+    }
+
+    .paste-divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .paste-divider::before,
+    .paste-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border-subtle);
+    }
+
+    .paste-divider span {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .paste-box {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow-card);
+    }
+
+    .paste-label {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .paste-label svg { opacity: 0.7; }
+
+    #paste-textarea {
+      width: 100%;
+      min-height: 120px;
+      background: var(--surface-raised);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-family: 'SF Mono', 'Fira Code', ui-monospace, monospace;
+      font-size: 0.8rem;
+      line-height: 1.6;
+      padding: 12px 14px;
+      resize: vertical;
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    #paste-textarea::placeholder { color: var(--muted); opacity: 0.7; }
+
+    #paste-textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(124, 111, 234, 0.12);
+    }
+
+    .paste-help {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-top: 8px;
+      margin-bottom: 14px;
+      line-height: 1.5;
+    }
+
+    #paste-btn {
+      width: 100%;
+      background: linear-gradient(135deg, var(--accent-dim), var(--accent));
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 11px 18px;
+      font-size: 0.84rem;
+      font-weight: 600;
+      cursor: pointer;
+      letter-spacing: 0.01em;
+      transition: opacity 0.15s, transform 0.12s;
+    }
+
+    #paste-btn:hover { opacity: 0.88; transform: translateY(-1px); }
+    #paste-btn:active { transform: translateY(0); opacity: 1; }
+    #paste-btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+
     /* ── Jobs ── */
     #jobs {
       width: 100%;
@@ -247,11 +347,11 @@
 
     .job-actions { /* container for stats, buttons, cancel */ }
 
-    /* Stats */
+    /* Stats row */
     .stats-row {
       display: flex;
       gap: 8px;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
 
     .stat-pill {
@@ -397,6 +497,20 @@
 </div>
 <input type="file" id="file-input" accept=".csv" style="display:none">
 
+<!-- ── Paste Emails Section (NEW) ── -->
+<div class="paste-section">
+  <div class="paste-divider"><span>or paste emails</span></div>
+  <div class="paste-box">
+    <div class="paste-label">
+      <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+      Paste Emails
+    </div>
+    <textarea id="paste-textarea" placeholder="john@gmail.com&#10;test@yahoo.com&#10;hello@example.com"></textarea>
+    <p class="paste-help">One email per line. Commas and semicolons are also supported.</p>
+    <button id="paste-btn">Verify Emails</button>
+  </div>
+</div>
+
 <div id="jobs"></div>
 
 <footer>
@@ -428,6 +542,33 @@ function handleFile(file) {
     .then(r => r.json())
     .then(({ job_id }) => createCard(job_id, file.name));
 }
+
+// ── Paste Emails handler (NEW) ──
+const pasteTextarea = document.getElementById('paste-textarea');
+const pasteBtn = document.getElementById('paste-btn');
+
+pasteBtn.addEventListener('click', () => {
+  const text = pasteTextarea.value.trim();
+  if (!text) return;
+
+  pasteBtn.disabled = true;
+  pasteBtn.textContent = 'Submitting…';
+
+  fetch(`${BASE}/verify`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ emails: text })
+  })
+    .then(r => r.json())
+    .then(({ job_id }) => {
+      createCard(job_id, 'Pasted Emails');
+      pasteTextarea.value = '';
+    })
+    .finally(() => {
+      pasteBtn.disabled = false;
+      pasteBtn.textContent = 'Verify Emails';
+    });
+});
 
 function createCard(job_id, fileName) {
   const card = document.createElement('div');
