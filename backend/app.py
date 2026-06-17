@@ -42,18 +42,36 @@ def abstract_verify(email):
     try:
         r = requests.get(
             "https://emailvalidation.abstractapi.com/v1/",
-            params={"api_key": ABSTRACT_API_KEY, "email": email},
+            params={
+                "api_key": ABSTRACT_API_KEY,
+                "email": email
+            },
             timeout=10,
         )
+
         data = r.json()
-        deliverability = data.get("deliverability", "").upper()
+
+        # Print full response to Render logs
+        print(f"\nABSTRACT API RESPONSE for {email}")
+        print(data)
+        print()
+
+        deliverability = str(data.get("deliverability", "")).upper()
+
         if deliverability == "DELIVERABLE":
             return "valid", "abstract_deliverable"
+
         elif deliverability == "UNDELIVERABLE":
             return "invalid", "abstract_undeliverable"
+
+        elif deliverability:
+            return "risky", f"abstract_{deliverability.lower()}"
+
         else:
-            return "risky", "abstract_unknown"
-    except Exception:
+            return "risky", "abstract_no_deliverability"
+
+    except Exception as e:
+        print(f"ABSTRACT ERROR: {e}", flush=True)
         return "risky", "abstract_error"
 
 
