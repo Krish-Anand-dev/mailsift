@@ -4,315 +4,229 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>MailSift | Bulk Email Verification Tool</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #0d0d0f;
-      --surface: #18181c;
-      --surface-raised: #1e1e24;
-      --border: #2a2a32;
-      --border-subtle: #222228;
-      --accent: #7c6fea;
-      --accent-dim: #3d3778;
-      --valid: #3ecf7a;
-      --risky: #f5a623;
-      --invalid: #f05252;
-      --text: #e8e8f0;
-      --text-secondary: #9898b0;
-      --muted: #7a7a90;
-      --radius: 14px;
-      --radius-sm: 8px;
-      --shadow-card: 0 2px 12px rgba(0,0,0,0.35), 0 1px 3px rgba(0,0,0,0.25);
-      --shadow-drop: 0 4px 24px rgba(0,0,0,0.45), 0 1px 4px rgba(0,0,0,0.3);
+      --bg: #faf9f7;
+      --surface: #ffffff;
+      --surface-2: #f5f2ee;
+      --border: #e8e2d8;
+      --border-light: #f0ebe3;
+      --accent: #8b6b4a;
+      --accent-dim: #f1e8de;
+      --valid: #22c55e;
+      --risky: #f59e0b;
+      --invalid: #ef4444;
+      --text: #222222;
+      --text-2: #666666;
+      --text-3: #888888;
+      --radius: 10px;
     }
 
     body {
       background: var(--bg);
       color: var(--text);
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      font-family: 'Inter', system-ui, sans-serif;
       min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 52px 20px 96px;
       -webkit-font-smoothing: antialiased;
     }
 
-    /* ── Header ── */
-    header {
+    /* ── Nav ── */
+    nav {
+      border-bottom: 1px solid var(--border-light);
+      padding: 0 32px;
+      display: flex;
+      align-items: center;
+      height: 56px;
+      gap: 32px;
+    }
+
+    .nav-logo {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.5px;
+      text-decoration: none;
+    }
+
+    .nav-logo span { color: var(--accent); }
+
+    /* ── Hero ── */
+    .hero {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 56px 24px 60px;
       text-align: center;
-      margin-bottom: 40px;
     }
 
-    .header-badge {
-      display: inline-block;
-      background: rgba(124, 111, 234, 0.12);
-      border: 1px solid rgba(124, 111, 234, 0.28);
-      color: #a89ff5;
-      font-size: 0.72rem;
-      font-weight: 600;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      padding: 4px 12px;
-      border-radius: 99px;
-      margin-bottom: 14px;
+    .hero h1 {
+      font-size: 2.6rem;
+      font-weight: 800;
+      letter-spacing: -1px;
+      line-height: 1.1;
+      color: var(--text);
+      margin-bottom: 12px;
     }
 
-    header h1 {
-      font-size: 2.2rem;
-      font-weight: 750;
-      letter-spacing: -0.6px;
-      background: linear-gradient(135deg, #ffffff 35%, #a89ff5);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      line-height: 1.15;
-    }
-
-    header .subtitle {
-      color: var(--text-secondary);
-      margin-top: 10px;
-      font-size: 0.92rem;
-      line-height: 1.55;
-      max-width: 380px;
+    .hero p {
+      font-size: 1rem;
+      color: var(--text-2);
+      margin-bottom: 32px;
+      max-width: 480px;
       margin-left: auto;
       margin-right: auto;
+      line-height: 1.6;
     }
 
-    /* ── Drop Zone ── */
+    /* ── Upload box ── */
+    .upload-wrap {
+      max-width: 640px;
+      margin: 0 auto;
+    }
+
     #drop-zone {
-      width: 100%;
-      max-width: 540px;
-      border: 1.5px dashed var(--border);
+      border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 52px 36px;
+      padding: 44px 32px;
       text-align: center;
       cursor: pointer;
-      transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
-      background: var(--surface);
-      box-shadow: var(--shadow-drop);
+      background: var(--bg);
+      transition: border-color 0.15s, background 0.15s;
+      margin-bottom: 12px;
     }
 
     #drop-zone:hover, #drop-zone.hover {
-      border-color: var(--accent);
-      background: #1c1a2e;
-      box-shadow: 0 8px 32px rgba(124, 111, 234, 0.14), 0 2px 8px rgba(0,0,0,0.3);
-      transform: translateY(-2px);
+      border-color: #d7c7b6;
+      background: #faf7f3;
     }
 
-    #drop-zone .drop-icon {
-      width: 44px;
-      height: 44px;
-      background: rgba(124, 111, 234, 0.1);
+    .upload-icon {
+      margin: 0 auto 14px;
+      width: 48px;
+      height: 48px;
       border-radius: 10px;
-      display: inline-flex;
+      background: #f5f2ee;
+      border: 1px solid var(--border);
+      display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 16px;
     }
 
-    #drop-zone .drop-icon svg { opacity: 0.85; display: block; }
-
-    #drop-zone .drop-primary {
+    .upload-label {
+      font-size: 0.95rem;
+      font-weight: 600;
       color: var(--text);
-      font-size: 0.92rem;
-      font-weight: 500;
       margin-bottom: 4px;
     }
 
-    #drop-zone .drop-primary span { color: var(--accent); font-weight: 600; }
+    .upload-label span { color: var(--accent); }
 
-    #drop-zone .drop-hint {
-      color: var(--muted);
-      font-size: 0.8rem;
-      margin-top: 6px;
+    .upload-sub {
+      font-size: 0.82rem;
+      color: var(--text-3);
     }
 
-    #drop-zone .drop-hint code {
-      color: var(--accent);
-      background: rgba(124, 111, 234, 0.1);
-      padding: 1px 6px;
-      border-radius: 4px;
-      font-size: 0.76rem;
-      font-family: 'SF Mono', 'Fira Code', monospace;
-    }
-
-    .column-note {
-      margin-top: 14px;
+    .upload-note {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      background: rgba(245, 166, 35, 0.08);
-      border: 1px solid rgba(245, 166, 35, 0.2);
-      border-radius: 6px;
-      padding: 6px 12px;
-      font-size: 0.77rem;
+      font-size: 0.78rem;
+      color: var(--text-3);
+      margin-top: 10px;
+    }
+
+    .upload-note code {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1px 6px;
+      font-family: 'Courier New', monospace;
       color: var(--risky);
+      font-size: 0.78rem;
     }
 
-    .column-note strong { font-weight: 700; font-family: 'SF Mono', 'Fira Code', monospace; }
-
-    /* ── Paste Section ── */
-    .paste-section {
-      width: 100%;
-      max-width: 540px;
-      margin-top: 20px;
-    }
-
-    .paste-divider {
+    /* ── Trust strip ── */
+    .trust-strip {
       display: flex;
       align-items: center;
-      gap: 12px;
+      justify-content: center;
+      gap: 24px;
+      flex-wrap: wrap;
+      padding: 0 24px;
+    }
+
+    .trust-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.78rem;
+      color: var(--text-3);
+    }
+
+    .trust-item svg { flex-shrink: 0; }
+
+    /* ── Main content ── */
+    main {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    /* ── Job section heading ── */
+    .section-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-3);
       margin-bottom: 16px;
     }
 
-    .paste-divider::before,
-    .paste-divider::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: var(--border-subtle);
-    }
-
-    .paste-divider span {
-      font-size: 0.75rem;
-      font-weight: 600;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--muted);
-      white-space: nowrap;
-    }
-
-    .paste-box {
-      background: var(--surface);
-      border: 1.5px solid var(--border);
-      border-radius: var(--radius);
-      padding: 20px;
-      box-shadow: var(--shadow-card);
-    }
-
-    .paste-label {
-      font-size: 0.82rem;
-      font-weight: 600;
-      color: var(--text-secondary);
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      gap: 7px;
-    }
-
-    .paste-label svg { opacity: 0.7; }
-
-    #paste-textarea {
-      width: 100%;
-      min-height: 120px;
-      background: var(--surface-raised);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      color: var(--text);
-      font-family: 'SF Mono', 'Fira Code', ui-monospace, monospace;
-      font-size: 0.8rem;
-      line-height: 1.6;
-      padding: 12px 14px;
-      resize: vertical;
-      outline: none;
-      transition: border-color 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    #paste-textarea::placeholder { color: var(--muted); opacity: 0.7; }
-
-    #paste-textarea:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(124, 111, 234, 0.12);
-    }
-
-    .paste-help {
-      font-size: 0.75rem;
-      color: var(--muted);
-      margin-top: 8px;
-      margin-bottom: 14px;
-      line-height: 1.5;
-    }
-
-    #paste-btn {
-      width: 100%;
-      background: linear-gradient(135deg, var(--accent-dim), var(--accent));
-      color: #fff;
-      border: none;
-      border-radius: var(--radius-sm);
-      padding: 11px 18px;
-      font-size: 0.84rem;
-      font-weight: 600;
-      cursor: pointer;
-      letter-spacing: 0.01em;
-      transition: opacity 0.15s, transform 0.12s;
-    }
-
-    #paste-btn:hover { opacity: 0.88; transform: translateY(-1px); }
-    #paste-btn:active { transform: translateY(0); opacity: 1; }
-    #paste-btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
-
-    /* ── Jobs ── */
-    #jobs {
-      width: 100%;
-      max-width: 540px;
-      margin-top: 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
+    /* ── Job Cards ── */
+    #jobs { display: flex; flex-direction: column; gap: 12px; }
 
     .job-card {
       background: var(--surface);
-      border: 1px solid var(--border-subtle);
+      border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 22px;
+      padding: 20px 22px;
       position: relative;
-      box-shadow: var(--shadow-card);
-      transition: box-shadow 0.2s ease;
-    }
-
-    .job-card:hover {
-      box-shadow: 0 4px 20px rgba(0,0,0,0.4), 0 1px 4px rgba(0,0,0,0.3);
     }
 
     .job-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
 
     .job-name {
+      font-size: 0.88rem;
       font-weight: 600;
-      font-size: 0.9rem;
       color: var(--text);
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      max-width: 400px;
     }
 
     .job-close {
       background: none;
       border: none;
-      color: var(--muted);
+      color: var(--text-3);
       cursor: pointer;
       font-size: 1rem;
+      padding: 2px 6px;
+      border-radius: 5px;
+      transition: color 0.12s, background 0.12s;
       line-height: 1;
-      padding: 4px 6px;
-      border-radius: 4px;
-      transition: color 0.15s, background 0.15s;
-      flex-shrink: 0;
     }
 
-    .job-close:hover { color: var(--text); background: rgba(255,255,255,0.06); }
+    .job-close:hover { color: var(--text); background: var(--surface-2); }
 
-    /* Progress track */
     .track {
-      height: 5px;
-      background: var(--border);
+      height: 4px;
+      background: var(--border-light);
       border-radius: 99px;
       overflow: hidden;
       margin-bottom: 10px;
@@ -320,218 +234,231 @@
 
     .fill {
       height: 100%;
-      background: linear-gradient(90deg, var(--accent-dim), var(--accent));
+      background: var(--accent);
       border-radius: 99px;
       width: 0%;
-      transition: width 0.35s ease;
+      transition: width 0.3s ease;
     }
 
     .job-meta {
-      font-size: 0.78rem;
-      color: var(--muted);
+      font-size: 0.77rem;
+      color: var(--text-3);
       margin-bottom: 6px;
       font-variant-numeric: tabular-nums;
     }
 
     .job-log {
-      font-size: 0.75rem;
-      color: var(--muted);
-      font-family: 'SF Mono', 'Fira Code', ui-monospace, monospace;
+      font-size: 0.73rem;
+      color: var(--text-3);
+      font-family: 'Courier New', monospace;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      margin-bottom: 14px;
-      min-height: 16px;
-      opacity: 0.75;
+      margin-bottom: 12px;
+      min-height: 14px;
     }
 
-    .job-actions { /* container for stats, buttons, cancel */ }
-
-    /* Results summary */
-    .results-summary {
+    /* Stats */
+    .stats-row {
       display: flex;
-      gap: 16px;
-      margin-bottom: 14px;
-      font-size: 0.8rem;
-      font-weight: 500;
+      gap: 8px;
+      margin-bottom: 12px;
     }
 
-    .results-summary .rs-item {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-
-    .results-summary .rs-count {
-      font-size: 1rem;
-      font-weight: 700;
-      letter-spacing: -0.4px;
-    }
-
-    .results-summary .rs-label {
-      color: var(--muted);
-      font-size: 0.75rem;
-    }
-
-    .rs-item.valid .rs-count { color: var(--valid); }
-    .rs-item.risky .rs-count { color: var(--risky); }
-    .rs-item.invalid .rs-count { color: var(--invalid); }
-
-    /* Download section */
-    .dl-heading {
-      font-size: 0.72rem;
+    .stat-pill {
+      flex: 1;
+      padding: 10px 8px;
+      border-radius: 8px;
+      text-align: center;
+      font-size: 0.7rem;
       font-weight: 600;
-      letter-spacing: 0.06em;
       text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 8px;
+      letter-spacing: 0.03em;
+      border: 1px solid transparent;
     }
 
-    .dl-stack {
-      display: flex;
-      flex-direction: column;
+    .stat-pill span {
+      display: block;
+      font-size: 1.3rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 2px;
+    }
+
+    .stat-pill.valid  { background: #0a1f10; color: var(--valid);   border-color: #153d1f; }
+    .stat-pill.risky  { background: #1f1508; color: var(--risky);   border-color: #3d2a0f; }
+    .stat-pill.invalid{ background: #1f0808; color: var(--invalid); border-color: #3d1010; }
+
+    /* Download buttons */
+    .dl-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
       gap: 6px;
     }
 
     .dl-btn {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 10px 14px;
-      border-radius: var(--radius-sm);
-      font-size: 0.8rem;
+      display: block;
+      text-align: center;
+      padding: 9px 12px;
+      border-radius: 7px;
+      font-size: 0.77rem;
       font-weight: 600;
       text-decoration: none;
-      transition: opacity 0.15s, transform 0.12s;
-      letter-spacing: 0.01em;
+      border: 1px solid var(--border);
+      color: var(--text-2);
+      background: var(--surface-2);
+      transition: background 0.12s, color 0.12s, border-color 0.12s;
     }
 
-    .dl-btn:hover { opacity: 0.82; transform: translateY(-1px); }
-    .dl-btn:active { transform: translateY(0); }
+    .dl-btn:hover { background: var(--surface); color: var(--text); border-color: var(--border); }
 
-    .dl-btn .dl-label { display: flex; align-items: center; gap: 8px; }
-    .dl-btn .dl-sub { font-size: 0.7rem; font-weight: 400; opacity: 0.75; }
+    .dl-btn.all {
+      grid-column: 1 / -1;
+      background: var(--accent-dim);
+      color: #c4bcff;
+      border-color: rgba(124,111,234,0.35);
+    }
 
-    .dl-btn.all   { background: var(--accent-dim); color: #c4bcff; }
-    .dl-btn.valid { background: rgba(62, 207, 122, 0.1); color: var(--valid); border: 1px solid rgba(62, 207, 122, 0.18); }
-    .dl-btn.risky { background: rgba(245, 166, 35, 0.1); color: var(--risky); border: 1px solid rgba(245, 166, 35, 0.18); }
-    .dl-btn.bad   { background: rgba(240, 82, 82, 0.1); color: var(--invalid); border: 1px solid rgba(240, 82, 82, 0.18); }
+    .dl-btn.all:hover { background: #3a3470; }
 
-    /* Cancel */
     .cancel-btn {
+      width: 100%;
       background: none;
       border: 1px solid var(--border);
-      color: var(--muted);
-      border-radius: var(--radius-sm);
-      padding: 8px 14px;
-      font-size: 0.78rem;
+      color: var(--text-3);
+      border-radius: 7px;
+      padding: 8px;
+      font-size: 0.77rem;
       font-weight: 500;
       cursor: pointer;
-      width: 100%;
-      transition: border-color 0.15s, color 0.15s, background 0.15s;
+      font-family: inherit;
+      transition: border-color 0.12s, color 0.12s;
     }
 
-    .cancel-btn:hover {
-      border-color: rgba(240, 82, 82, 0.5);
-      color: var(--invalid);
-      background: rgba(240, 82, 82, 0.05);
+    .cancel-btn:hover { border-color: var(--invalid); color: var(--invalid); }
+
+    /* ── Empty state ── */
+    .empty-state {
+      text-align: center;
+      padding: 48px 0;
+      color: var(--text-3);
+      font-size: 0.85rem;
+      display: none;
     }
 
     /* ── Footer ── */
     footer {
-      margin-top: 60px;
+      border-top: 1px solid var(--border-light);
+      padding: 28px 24px;
       text-align: center;
-      border-top: 1px solid var(--border-subtle);
-      padding-top: 28px;
-      width: 100%;
-      max-width: 540px;
     }
 
-    .footer-name {
-      font-size: 0.88rem;
-      font-weight: 600;
-      color: var(--text-secondary);
-      margin-bottom: 4px;
+    .footer-inner {
+      max-width: 700px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
     }
 
-    .footer-desc {
-      font-size: 0.78rem;
-      color: var(--muted);
-      margin-bottom: 12px;
-      line-height: 1.5;
-    }
+    .footer-left { text-align: left; }
+    .footer-name { font-size: 0.85rem; font-weight: 600; color: var(--text-2); }
+    .footer-desc { font-size: 0.75rem; color: var(--text-3); margin-top: 2px; }
 
     .footer-github {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      color: var(--muted);
+      gap: 7px;
       text-decoration: none;
+      color: var(--text-3);
       font-size: 0.78rem;
       font-weight: 500;
-      padding: 5px 12px;
+      padding: 6px 12px;
       border: 1px solid var(--border);
-      border-radius: 6px;
-      transition: color 0.15s, border-color 0.15s;
+      border-radius: 7px;
+      transition: color 0.12s, border-color 0.12s;
     }
 
-    .footer-github:hover { color: var(--text); border-color: #444455; }
-    .footer-github svg { opacity: 0.7; }
+    .footer-github:hover { color: var(--text-2); border-color: var(--border); }
 
-    /* Responsive */
-    @media (max-width: 560px) {
-      header h1 { font-size: 1.75rem; }
-      #drop-zone { padding: 40px 24px; }
-      .job-name { max-width: 240px; }
+    @media (max-width: 540px) {
+      .hero h1 { font-size: 1.9rem; }
+      nav { padding: 0 20px; }
+      .footer-inner { flex-direction: column; align-items: center; text-align: center; }
+      .footer-left { text-align: center; }
+      .trust-strip { gap: 14px; }
     }
   </style>
 </head>
 <body>
 
-<header>
-  <div class="header-badge">Bulk Email Verification Made Simple</div>
-  <h1>MailSift</h1>
-  <p class="subtitle">Verify email lists using syntax validation, MX records, SMTP checks, and reputation analysis.</p>
-</header>
+<!-- Nav -->
+<nav>
+  <a class="nav-logo" href="#"><span>Mail</span>Sift</a>
+</nav>
 
-<div id="drop-zone">
-  <div class="drop-icon">
-    <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#7c6fea" stroke-width="1.8">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M12 16V4m0 0L8 8m4-4 4 4M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2"/>
-    </svg>
-  </div>
-  <p class="drop-primary"><span>Click to upload</span> or drag & drop</p>
-  <p class="drop-hint">CSV with an <code>email</code> column</p>
-  <div class="column-note">
-    <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4m0 4h.01M12 3a9 9 0 100 18A9 9 0 0012 3z"/></svg>
-    Column must be named exactly <strong>"email"</strong> (lowercase)
+<!-- Hero -->
+<div class="hero">
+  <h1>Verify Email Lists</h1>
+  <p>Upload a CSV to verify email lists — syntax checks, MX records, SMTP probing, and reputation analysis.</p>
+
+  <div class="upload-wrap">
+    <div id="drop-zone">
+      <div class="upload-icon">
+        <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#a89fff" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 16V4m0 0L8 8m4-4 4 4M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2"/>
+        </svg>
+      </div>
+      <div class="upload-label"><span>Click to upload</span> or drag & drop</div>
+      <div class="upload-sub">CSV file · max 50 MB</div>
+      <div class="upload-note">
+        <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1a7 7 0 100 14A7 7 0 008 1zm.75 4a.75.75 0 00-1.5 0v3.25H4a.75.75 0 000 1.5h3.25V13a.75.75 0 001.5 0V9.75H12a.75.75 0 000-1.5H8.75V5z"/></svg>
+        Email column must be named exactly <code>email</code>
+      </div>
+    </div>
+    <div class="trust-strip">
+      <div class="trust-item">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="var(--valid)"><path d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z"/></svg>
+        No signup required
+      </div>
+      <div class="trust-item">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="var(--valid)"><path d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z"/></svg>
+        Results downloadable by status
+      </div>
+      <div class="trust-item">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="var(--valid)"><path d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z"/></svg>
+        SMTP + MX checks included
+      </div>
+    </div>
   </div>
 </div>
+
 <input type="file" id="file-input" accept=".csv" style="display:none">
 
-<!-- ── Paste Emails Section (NEW) ── -->
-<div class="paste-section">
-  <div class="paste-divider"><span>or paste emails</span></div>
-  <div class="paste-box">
-    <div class="paste-label">
-      <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-      Paste Emails
-    </div>
-    <textarea id="paste-textarea" placeholder="john@gmail.com&#10;test@yahoo.com&#10;hello@example.com"></textarea>
-    <p class="paste-help">One email per line. Commas and semicolons are also supported.</p>
-    <button id="paste-btn">Verify Emails</button>
+<!-- Jobs -->
+<main>
+  <div id="jobs-wrap" style="display:none">
+    <div class="section-label">Verification Jobs</div>
+    <div id="jobs"></div>
   </div>
-</div>
+</main>
 
-<div id="jobs"></div>
-
+<!-- Footer -->
 <footer>
-  <div class="footer-name">Krish Anand</div>
-  <div class="footer-desc">Built for quick and reliable bulk email verification.</div>
-  <a class="footer-github" href="https://github.com/Krish-Anand-dev" target="_blank" rel="noopener">
-    <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-    github.com/Krish-Anand-dev
-  </a>
+  <div class="footer-inner">
+    <div class="footer-left">
+      <div class="footer-name">Krish Anand</div>
+      <div class="footer-desc">Built for quick and reliable bulk email verification.</div>
+    </div>
+    <a class="footer-github" href="https://github.com/Krish-Anand-dev" target="_blank" rel="noopener noreferrer">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
+      </svg>
+      Krish-Anand-dev
+    </a>
+  </div>
 </footer>
 
 <script>
@@ -539,6 +466,7 @@ const BASE = 'https://mailsift-9571.onrender.com';
 const drop = document.getElementById('drop-zone');
 const fileInput = document.getElementById('file-input');
 const jobsEl = document.getElementById('jobs');
+const jobsWrap = document.getElementById('jobs-wrap');
 
 drop.addEventListener('click', () => fileInput.click());
 drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('hover'); });
@@ -555,34 +483,8 @@ function handleFile(file) {
     .then(({ job_id }) => createCard(job_id, file.name));
 }
 
-// ── Paste Emails handler (NEW) ──
-const pasteTextarea = document.getElementById('paste-textarea');
-const pasteBtn = document.getElementById('paste-btn');
-
-pasteBtn.addEventListener('click', () => {
-  const text = pasteTextarea.value.trim();
-  if (!text) return;
-
-  pasteBtn.disabled = true;
-  pasteBtn.textContent = 'Submitting…';
-
-  fetch(`${BASE}/verify`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ emails: text })
-  })
-    .then(r => r.json())
-    .then(({ job_id }) => {
-      createCard(job_id, 'Pasted Emails');
-      pasteTextarea.value = '';
-    })
-    .finally(() => {
-      pasteBtn.disabled = false;
-      pasteBtn.textContent = 'Verify Emails';
-    });
-});
-
 function createCard(job_id, fileName) {
+  jobsWrap.style.display = 'block';
   const card = document.createElement('div');
   card.className = 'job-card';
   card.innerHTML = `
@@ -620,6 +522,7 @@ function createCard(job_id, fileName) {
   closeBtn.onclick = () => {
     fetch(`${BASE}/cancel?job_id=${job_id}`, { method: 'POST' });
     card.remove();
+    if (!jobsEl.children.length) jobsWrap.style.display = 'none';
   };
 
   const pollLog = setInterval(() => {
@@ -635,38 +538,16 @@ function createCard(job_id, fileName) {
         logEl.textContent = '';
         fetch(`${BASE}/stats?job_id=${job_id}`).then(r => r.json()).then(s => {
           actions.innerHTML = `
-            <div class="results-summary">
-              <div class="rs-item valid">
-                <span class="rs-count">${s.valid ?? 0}</span>
-                <span class="rs-label">Valid</span>
-              </div>
-              <div class="rs-item risky">
-                <span class="rs-count">${s.risky ?? 0}</span>
-                <span class="rs-label">Risky</span>
-              </div>
-              <div class="rs-item invalid">
-                <span class="rs-count">${s.invalid ?? 0}</span>
-                <span class="rs-label">Invalid</span>
-              </div>
+            <div class="stats-row">
+              <div class="stat-pill valid"><span>${s.valid ?? 0}</span>Valid</div>
+              <div class="stat-pill risky"><span>${s.risky ?? 0}</span>Risky</div>
+              <div class="stat-pill invalid"><span>${s.invalid ?? 0}</span>Invalid</div>
             </div>
-            <div class="dl-heading">Download Results</div>
-            <div class="dl-stack">
-              <a class="dl-btn all" href="${BASE}/download?job_id=${job_id}&type=all" target="_blank">
-                <span class="dl-label">⬇ All Emails</span>
-                <span class="dl-sub">Full list with status &amp; reason</span>
-              </a>
-              <a class="dl-btn valid" href="${BASE}/download?job_id=${job_id}&type=valid" target="_blank">
-                <span class="dl-label">✓ Valid Only</span>
-                <span class="dl-sub">${s.valid ?? 0} emails</span>
-              </a>
-              <a class="dl-btn risky" href="${BASE}/download?job_id=${job_id}&type=risky" target="_blank">
-                <span class="dl-label">⚠ Risky Only</span>
-                <span class="dl-sub">${s.risky ?? 0} emails</span>
-              </a>
-              <a class="dl-btn bad" href="${BASE}/download?job_id=${job_id}&type=risky_invalid" target="_blank">
-                <span class="dl-label">✕ Risky + Invalid</span>
-                <span class="dl-sub">Suppression list — ${(s.risky ?? 0) + (s.invalid ?? 0)} emails</span>
-              </a>
+            <div class="dl-grid">
+              <a class="dl-btn all" href="${BASE}/download?job_id=${job_id}&type=all" target="_blank">Download All Results</a>
+              <a class="dl-btn valid" href="${BASE}/download?job_id=${job_id}&type=valid" target="_blank">Valid</a>
+              <a class="dl-btn risky" href="${BASE}/download?job_id=${job_id}&type=risky" target="_blank">Risky</a>
+              <a class="dl-btn bad" href="${BASE}/download?job_id=${job_id}&type=risky_invalid" target="_blank">Invalid</a>
             </div>
           `;
         });
