@@ -5,7 +5,6 @@
 **Live demo:** [mailsift.vercel.app](https://mailsift-one.vercel.app) &nbsp;·&nbsp; **Backend:** [Render](https://render.com)
 
 ---
-<img width="1728" height="887" alt="image" src="https://github.com/user-attachments/assets/bc6d5f14-2d30-41e6-849a-d030ade109fe" />
 
 ## What It Does
 
@@ -72,7 +71,6 @@ Jobs run in the background — you can submit multiple at once and track them al
 
 ## Downloading Results
 
-<img width="597" height="310" alt="image" src="https://github.com/user-attachments/assets/362eb0e6-f3ca-42b2-ad24-5e28443cd9b5" />
 
 
 Once a job finishes, the job card displays a summary of results and four download buttons:
