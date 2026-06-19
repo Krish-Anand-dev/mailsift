@@ -190,8 +190,9 @@
     #jobs { display: flex; flex-direction: column; gap: 12px; }
 
     .job-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
+      background: white;
+      border: 1px solid #e7dfd4;
+      box-shadow: 0 2px 8px rgba(0,0,0,.04);
       border-radius: var(--radius);
       padding: 20px 22px;
       position: relative;
@@ -249,8 +250,9 @@
 
     .job-log {
       font-size: 0.73rem;
-      color: var(--text-3);
-      font-family: 'Courier New', monospace;
+      color: #555;
+      font-family: monospace;
+      font-size: 0.82rem;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -285,10 +287,23 @@
       margin-bottom: 2px;
     }
 
-    .stat-pill.valid  { background: #0a1f10; color: var(--valid);   border-color: #153d1f; }
-    .stat-pill.risky  { background: #1f1508; color: var(--risky);   border-color: #3d2a0f; }
-    .stat-pill.invalid{ background: #1f0808; color: var(--invalid); border-color: #3d1010; }
+    .stat-pill.valid {
+    background: #edf7f0;
+    color: #2f855a;
+    border: 1px solid #cfe8d6;
+    }
 
+    .stat-pill.risky {
+    background: #fff7e8;
+    color: #b7791f;
+    border: 1px solid #f0dfb8;
+    }
+
+    .stat-pill.invalid {
+    background: #fdeeee;
+    color: #c53030;
+    border: 1px solid #efcaca;
+    }
     /* Download buttons */
     .dl-grid {
       display: grid;
@@ -305,8 +320,8 @@
       font-weight: 600;
       text-decoration: none;
       border: 1px solid var(--border);
-      color: var(--text-2);
-      background: var(--surface-2);
+      color: #444;
+      background: white;
       transition: background 0.12s, color 0.12s, border-color 0.12s;
     }
 
@@ -314,9 +329,9 @@
 
     .dl-btn.all {
       grid-column: 1 / -1;
-      background: var(--accent-dim);
-      color: #c4bcff;
-      border-color: rgba(124,111,234,0.35);
+      background: #8b6b4a;
+      color: white;
+      border-color: #8b6b4a;
     }
 
     .dl-btn.all:hover { background: #3a3470; }
