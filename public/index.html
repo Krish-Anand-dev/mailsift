@@ -398,6 +398,62 @@
 
     .footer-github:hover { color: var(--text-2); border-color: var(--border); }
 
+    /* ── Quick Check ── */
+    .quick-check {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 22px;
+      margin-bottom: 28px;
+    }
+
+    .quick-check-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 10px;
+    }
+
+    .quick-check-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .quick-check-input {
+      flex: 1;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 9px 13px;
+      font-size: 0.88rem;
+      font-family: inherit;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .quick-check-input::placeholder { color: var(--text-3); }
+    .quick-check-input:focus { border-color: var(--accent); }
+
+    .quick-check-btn {
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 7px;
+      padding: 9px 18px;
+      font-size: 0.84rem;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: opacity 0.15s;
+    }
+
+    .quick-check-btn:hover { opacity: 0.88; }
+    .quick-check-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
     @media (max-width: 540px) {
       .hero h1 { font-size: 1.9rem; }
       nav { padding: 0 20px; }
@@ -454,6 +510,14 @@
 
 <!-- Jobs -->
 <main>
+  <div class="quick-check">
+    <div class="quick-check-label">Quick Check</div>
+    <div class="quick-check-row">
+      <input class="quick-check-input" id="quick-input" type="email" placeholder="name@example.com" autocomplete="off" spellcheck="false">
+      <button class="quick-check-btn" id="quick-btn">Verify Email</button>
+    </div>
+  </div>
+
   <div id="jobs-wrap" style="display:none">
     <div class="section-label">Verification Jobs</div>
     <div id="jobs"></div>
@@ -570,6 +634,22 @@ function createCard(job_id, fileName) {
     });
   }, 1000);
 }
+// ── Quick Check ──
+const quickInput = document.getElementById('quick-input');
+const quickBtn   = document.getElementById('quick-btn');
+
+function handleQuickCheck() {
+  const email = quickInput.value.trim();
+  if (!email) return;
+  const csvContent = 'email\n' + email;
+  const blob = new Blob([csvContent], { type: 'text/csv' });
+  const file = new File([blob], email + '.csv', { type: 'text/csv' });
+  quickInput.value = '';
+  handleFile(file);
+}
+
+quickBtn.addEventListener('click', handleQuickCheck);
+quickInput.addEventListener('keydown', e => { if (e.key === 'Enter') handleQuickCheck(); });
 </script>
 </body>
 </html>
